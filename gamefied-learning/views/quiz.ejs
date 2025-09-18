@@ -1,0 +1,39 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Quiz</title>
+  <link rel="stylesheet" href="/public/css/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="left">🎓 <span class="brand">STEM Learning</span></div>
+    <div class="right">
+      <div class="welcome">Hello, <strong><%= user.name %></strong></div>
+      <a class="btn ghost" href="/">Back</a>
+    </div>
+  </header>
+
+  <main class="container">
+    <% if (typeof result !== 'undefined') { %>
+      <div class="alert success">You scored <strong><%= result.correct %></strong> out of <%= result.total %>. XP earned: <%= result.xpGain %></div>
+    <% } %>
+
+    <% if (qs && qs.length) { %>
+      <form method="POST" action="/quiz/<%= subjectId %>/submit" class="quiz-form">
+        <% qs.forEach(q => { %>
+          <div class="qcard">
+            <h4><%= q.question %></h4>
+            <% q.options.forEach((opt, i) => { %>
+              <label><input type="radio" name="q_<%= q.id %>" value="<%= i %>"> <%= opt %></label><br>
+            <% }) %>
+          </div>
+        <% }) %>
+        <button class="btn primary">Submit</button>
+      </form>
+    <% } else { %>
+      <p>No questions available for this subject (or you just finished the quiz).</p>
+    <% } %>
+  </main>
+</body>
+</html>

@@ -1,0 +1,101 @@
+/* public/css/style.css */
+:root{
+  --accent1:#6e8efb;
+  --accent2:#a777e3;
+  --card:#ffffff;
+  --muted:#6b7280;
+  --shadow: 0 8px 20px rgba(16,24,40,0.08);
+  --glass: rgba(255,255,255,0.6);
+  font-size: 16px;
+}
+*{box-sizing:border-box}
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin:0;
+  background: linear-gradient(135deg, #f0f4ff, #f6e9ff);
+  color:#111827;
+  min-height:100vh;
+}
+
+/* topbar */
+.topbar {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:16px 28px;
+  background: linear-gradient(90deg,var(--accent1),var(--accent2));
+  color:white;
+  box-shadow: var(--shadow);
+}
+.topbar .brand{font-weight:700}
+.topbar .welcome{margin-right:12px}
+.topbar .right {display:flex; align-items:center; gap:12px}
+
+/* container */
+.container { max-width:1100px; margin:28px auto; padding:0 16px; }
+
+/* center page */
+.wrap { display:flex; height:100vh; align-items:center; justify-content:center; }
+
+/* board (auth) */
+.board {
+  background: var(--card);
+  padding:28px;
+  width:380px;
+  border-radius:12px;
+  box-shadow: var(--shadow);
+  text-align:center;
+}
+.board h1{margin:0 0 14px; color:var(--accent2)}
+.form input, .form select {
+  width:100%; padding:10px 12px; margin:8px 0; border-radius:8px; border:1px solid #e5e7eb;
+}
+.buttons { display:flex; gap:10px; margin-top:14px; justify-content:center }
+.btn {
+  padding:8px 12px; border-radius:8px; cursor:pointer; border:none;
+}
+.btn.primary { background: linear-gradient(90deg,var(--accent1),var(--accent2)); color:white; }
+.btn.ghost { background: transparent; border:1px solid #e5e7eb; color:#111827; padding:8px 10px; }
+
+/* alerts */
+.alert { background:#ffefef; color:#9b1c1c; padding:8px; border-radius:6px; margin-bottom:10px; }
+.alert.success { background:#e6ffef; color:#0b8043 }
+
+/* grid of subjects */
+.subjects-grid {
+  display:grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap:18px;
+  margin-top:16px;
+}
+.card { background:var(--card); border-radius:12px; padding:16px; box-shadow:var(--shadow); }
+.subject-card { text-align:center; padding:18px; }
+.subject-icon{ font-size:36px; margin-bottom:6px; }
+.progress-bar { background:#f3f4f6; height:10px; border-radius:999px; overflow:hidden; margin:10px 0; }
+.progress { height:100%; background: linear-gradient(90deg,var(--accent1),var(--accent2)); width:0; transition: width 1s ease; }
+
+/* card actions */
+.card-actions { display:flex; gap:8px; justify-content:center; margin-top:10px; }
+.btn.small{ padding:8px 10px; border-radius:8px; }
+.btn.secondary { background: #f3f4f6; }
+
+/* table (teacher) */
+.table { background:var(--card); border-radius:12px; overflow:hidden; box-shadow:var(--shadow); }
+.row { display:grid; grid-template-columns: 1fr 1fr 120px; padding:12px 16px; align-items:center; border-bottom: 1px solid #f3f4f6; }
+.row.header { background: #f9fafb; font-weight:600; }
+
+/* memory game */
+.game-board { display:grid; grid-template-columns: repeat(4, 1fr); gap:12px; margin:16px 0; max-width:640px; }
+.mem-card {
+  height:80px; border-radius:10px; background:#fff; box-shadow:var(--shadow); border:2px solid transparent; font-size:24px;
+  display:flex; align-items:center; justify-content:center; cursor:pointer;
+}
+.mem-card.matched { background: #dff6e9; transform: scale(1.02); }
+.game-info { display:flex; gap:16px; align-items:center; margin-top:8px; }
+
+/* small responsive */
+@media (max-width:600px){
+  .topbar { padding:12px; }
+  .container { padding:0 12px; }
+  .game-board { grid-template-columns: repeat(2, 1fr); }
+}

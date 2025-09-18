@@ -1,0 +1,88 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Memory Match</title>
+  <link rel="stylesheet" href="/public/css/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="left">🎮 Memory Match</div>
+    <div class="right">
+      <div class="welcome"><strong><%= user.name %></strong></div>
+      <a class="btn ghost" href="/">Back</a>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="game-board" id="board"></div>
+    <div class="game-info">
+      <span id="matches">Matches: 0</span>
+      <button id="restart" class="btn">Restart</button>
+    </div>
+  </main>
+
+  <script>
+    const emojis = ['🍎','🍌','🍇','🍉','🍓','🍒','🥝','🍍'];
+    let deck = [...emojis, ...emojis].sort(() => Math.random() - 0.5);
+    const board = document.getElementById('board');
+    let open = [], matched = 0;
+
+    function renderBoard() {
+      board.innerHTML = '';
+      deck.forEach((val, idx) => {
+        const card = document.createElement('button');
+        card.className = 'mem-card';
+        card.dataset.idx = idx;
+        card.innerHTML = `<span class="face">?</span>`;
+        card.onclick = () => flipCard(card, idx);
+        board.appendChild(card);
+      });
+    }
+
+    function flipCard(card, idx) {
+      if (card.classList.contains('matched') || open.find(o => o.idx === idx)) return;
+      card.querySelector('.face').textContent = deck[idx];
+      open.push({ card, idx, val: deck[idx] });
+      if (open.length === 2) {
+        if (open[0].val === open[1].val) {
+          open[0].card.classList.add('matched');
+          open[1].card.classList.add('matched');
+          matched += 1;
+          document.getElementById('matches').textContent = `Matches: ${matched}`;
+          open = [];
+          if (matched === emojis.length) gameWon();
+        } else {
+          setTimeout(() => {
+            open.forEach(o => o.card.querySelector('.face').textContent = '?');
+            open = [];
+          }, 700);
+        }
+      }
+    }
+
+    function restart() {
+      deck = [...emojis, ...emojis].sort(() => Math.random() - 0.5);
+      open = []; matched = 0;
+      document.getElementById('matches').textContent = 'Matches: 0';
+      renderBoard();
+    }
+
+    function gameWon() {
+      // simple XP award via fetch
+      fetch('/api/award', {
+        method: 'POST',
+        headers: { 'Content-Type':'application/json' },
+        body: JSON.stringify({ xp: 20 })
+      }).then(r => r.json()).then(data => {
+        alert('You won! +20 XP (Total XP: ' + (data.xp || '') + ')');
+      });
+    }
+
+    document.getElementById('restart').addEventListener('click', restart);
+
+    // initial render
+    renderBoard();
+  </script>
+</body>
+</html>

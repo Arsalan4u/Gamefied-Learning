@@ -1,0 +1,30 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Register</title>
+  <link rel="stylesheet" href="/public/css/style.css">
+</head>
+<body>
+  <div class="wrap center">
+    <div class="board">
+      <h1>Create account</h1>
+      <% if (error) { %><div class="alert"><%= error %></div><% } %>
+      <form method="POST" action="/register" class="form">
+        <input name="name" placeholder="Full name" required>
+        <input name="username" placeholder="Username" required>
+        <input name="password" type="password" placeholder="Password" required>
+        <select name="role" required>
+          <option value="">-- Role --</option>
+          <option value="student">Student</option>
+          <option value="teacher">Teacher</option>
+        </select>
+        <div class="buttons">
+          <button class="btn primary">Register</button>
+          <a class="btn ghost" href="/login">Back to login</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</body>
+</html>

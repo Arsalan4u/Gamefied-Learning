@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Socho Seekho | Gamified Learning Platform</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link rel="stylesheet" href="/public/css/style.css">
+  <style>
+    :root{--p:#4169e1 ;--s:#4169e1;--accent:#202039;--dark:#2c3e50}
+    *{box-sizing:border-box;margin:0;padding:0;font-family:"Segoe UI",Tahoma,Geneva,Verdana,sans-serif}
+    body{min-height:100vh;background:linear-gradient(135deg,var(--p),var(--s));overflow-x:hidden}
+    
+    /* Container that holds both landing and login */
+    .app-container{position:relative;width:100%;min-height:100vh;transition:transform .8s cubic-bezier(.25,.1,.25,1)}
+    .app-container.show-login{transform:translateY(-100vh)}
+    
+    /* Landing Page Styles */
+    .landing{height:100vh;display:flex;flex-direction:column;color:#fff;position:relative}
+    
+    /* Header */
+    .header{padding:20px 0;background:rgba(255,255,255,0.1);backdrop-filter:blur(10px)}
+    .nav{max-width:1200px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;padding:0 20px}
+    .logo{display:flex;align-items:center;gap:15px;font-size:1.8rem;font-weight:700;color:#fff}
+    .logo-icon{width:50px;height:50px;background-image:url('/public/css/images/logo.jpeg');background-size:cover;background-position:center;border-radius:50%;box-shadow:0 4px 12px rgba(0,0,0,0.3)}
+    .logo .highlight{color:var(--accent)}
+    
+    /* Language Selector */
+    .nav-right{display:flex;align-items:center;gap:15px}
+    .language-selector{position:relative}
+    .language-btn{background:rgba(255,255,255,0.2);border:none;color:#fff;padding:8px 16px;border-radius:20px;cursor:pointer;font-weight:500;transition:.3s;display:flex;align-items:center;gap:8px}
+    .language-btn:hover{background:rgba(255,255,255,0.3);transform:translateY(-1px)}
+    .language-dropdown{position:absolute;top:100%;right:0;background:#fff;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,0.15);min-width:140px;opacity:0;visibility:hidden;transform:translateY(-10px);transition:.3s;z-index:1000}
+    .language-dropdown.show{opacity:1;visibility:visible;transform:translateY(0)}
+    .language-option{padding:12px 16px;color:#333;cursor:pointer;transition:.2s;border-bottom:1px solid #f0f0f0}
+    .language-option:hover{background:#f8f9ff;color:var(--p)}
+    .language-option:last-child{border-bottom:none}
+    .language-option.active{background:#eef5ff;color:var(--p);font-weight:600}
+    
+    .nav-login{background:#fff;color:var(--p);padding:10px 24px;border:none;border-radius:25px;font-weight:600;cursor:pointer;text-decoration:none;transition:.3s}
+    .nav-login:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(0,0,0,.2)}
+    
+    /* Hero Section */
+    .hero{flex:1;display:flex;align-items:center;justify-content:center;text-align:center;padding:20px}
+    .hero-content{max-width:800px}
+    .hero h1{font-size:3.5rem;margin-bottom:20px;text-shadow:2px 2px 4px rgba(0,0,0,.1)}
+    .hero h1 .odia{color:#fff200;font-weight:800}
+    .tagline{font-size:1.4rem;margin-bottom:15px;opacity:.95}
+    .description{font-size:1.1rem;margin-bottom:40px;opacity:.9;line-height:1.6}
+    .hero-buttons{display:flex;gap:20px;justify-content:center;flex-wrap:wrap}
+    .btn{padding:15px 30px;border:none;border-radius:30px;font-weight:600;font-size:1.1rem;cursor:pointer;transition:.3s;text-decoration:none;display:inline-block}
+    .btn.primary{background:#fff;color:var(--p)}
+    .btn.secondary{background:rgba(255,255,255,.2);color:#fff;border:2px solid #fff}
+    .btn:hover{transform:translateY(-3px);box-shadow:0 8px 25px rgba(0,0,0,.2)}
+    /* Features Preview */
+    .features-preview{background:rgba(255,255,255,.1);backdrop-filter:blur(10px);padding:30px 20px}
+    .features-grid{max-width:1000px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:30px;text-align:center}
+    .feature-item{opacity:.9}
+    .feature-icon{font-size:2.5rem;margin-bottom:10px}
+    .feature-title{font-size:1.1rem;font-weight:600;margin-bottom:5px}
+    .feature-desc{font-size:.9rem;opacity:.8;line-height:1.4}
+    /* Login Page Styles */
+    .login{height:100vh;display:flex;align-items:center;justify-content:center;position:relative}
+    .back-btn{position:absolute;top:20px;left:20px;background:rgba(255,255,255,.2);border:none;color:#fff;padding:10px 20px;border-radius:20px;cursor:pointer;font-weight:600;transition:.3s}
+    .back-btn:hover{background:rgba(255,255,255,.3);transform:translateY(-2px)}
+    
+    .shell{width:1000px;max-width:96%;background:#fff;border-radius:24px;box-shadow:0 20px 50px rgba(0,0,0,.15);overflow:hidden;display:flex}
+    /* left tabs - expanded for signup options */
+    .tabs{width:280px;background:#f7f9ff;padding:30px 0;display:flex;flex-direction:column;gap:8px}
+    .tab{padding:12px 20px;border:0;background:none;text-align:left;font-size:0.95rem;font-weight:600;color:#333;cursor:pointer;border-left:4px solid transparent;transition:.3s}
+    .tab.act{color:var(--p);border-color:var(--p);background:#eef5ff}
+    .tab span{font-size:1.2rem;margin-right:8px}
+    /* right pane */
+    .pane{flex:1;padding:50px 40px;animation:fade .3s ease}
+    @keyframes fade{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+    h2{margin-bottom:6px}
+    h2 span{font-size:1.8rem;margin-right:6px}
+    p.subtitle{font-size:.9rem;color:#666;margin-bottom:28px}
+    input,select{width:100%;padding:13px 15px;border:2px solid #e5e8f2;border-radius:12px;font-size:.95rem;margin-bottom:18px;background:#fff}
+    select{cursor:pointer}
+    .form-row{display:flex;gap:15px}
+    .form-row input{flex:1}
+    .login-btn{width:100%;padding:13px 0;border:none;border-radius:30px;font-weight:600;font-size:1rem;cursor:pointer;transition:.25s}
+    .login-btn.primary{background:linear-gradient(135deg,var(--p),var(--s));color:#fff}
+    .login-btn:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(0,0,0,.18)}
+    .switch{margin-top:20px;font-size:.88rem}
+    .switch a{color:var(--p);text-decoration:none;font-weight:600}
+    /* alert */
+    .alert{background:#f8d7da;color:#721c24;padding:12px;border-radius:10px;margin-bottom:18px}
+    
+    /* Mobile Styles */
+    @media(max-width:768px){
+      .hero h1{font-size:2.5rem}
+      .hero-buttons{flex-direction:column;align-items:center}
+      .features-grid{grid-template-columns:1fr}
+      .nav{flex-direction:column;gap:15px}
+      .nav-right{order:-1}
+      .shell{flex-direction:column}
+      .tabs{flex-direction:row;width:100%;justify-content:center;overflow-x:auto;padding:20px 10px}
+      .tab{text-align:center;border-left:none;border-bottom:4px solid transparent;white-space:nowrap;min-width:100px;font-size:0.85rem}
+      .tab.act{border-left:none;border-bottom-color:var(--p)}
+      .form-row{flex-direction:column}
+    }
+  </style>
+</head>
+<body>
+<div class="app-container" id="appContainer">
+  <!-- Landing Page -->
+  <div class="landing">
+    <!-- Header -->
+    <header class="header">
+      <nav class="nav">
+        <div class="logo">
+          <div class="logo-icon"></div>
+          <span>Socho <span class="highlight">Seekho</span></span>
+        </div>
+        <div class="nav-right">
+          <div class="language-selector">
+            <button class="language-btn" onclick="toggleLanguageDropdown()">
+              🌐 <span id="currentLang">English</span> ▼
+            </button>
+            <div class="language-dropdown" id="languageDropdown">
+              <div class="language-option active" onclick="selectLanguage('en', 'English')">🇺🇸 English</div>
+              <div class="language-option" onclick="selectLanguage('hi', 'हिन्दी')">🇮🇳 हिन्दी</div>
+              <div class="language-option" onclick="selectLanguage('or', 'ଓଡ଼ିଆ')">🏛️ ଓଡ଼ିଆ</div>
+            </div>
+          </div>
+          <a href="#" class="nav-login" onclick="showLogin()">Login</a>
+        </div>
+      </nav>
+    </header>
+    <!-- Hero Section -->
+    <section class="hero">
+      <div class="hero-content">
+        <h1>Learn <span class="odia"></span> Through Play!</h1>
+        <p class="tagline">Smart Learning for Every Child, Everywhere.</p>
+        <p class="description">
+          Socho Seekho transforms education into an exciting adventure for students in grades 6-12. 
+          Learn Mathematics, Science, Computer Science, and Odia through interactive games, quizzes, and challenges. 
+          Compete with friends, earn XP points, unlock achievements, and make learning fun!
+        </p>
+        <div class="hero-buttons">
+          <button class="btn primary" onclick="showLogin()">Get Started →</button>
+          <a href="#features" class="btn secondary">Learn More</a>
+        </div>
+      </div>
+    </section>
+    <!-- Features Preview -->
+    <section class="features-preview" id="features">
+      <div class="features-grid">
+        <div class="feature-item">
+          <div class="feature-icon">🎮</div>
+          <div class="feature-title">Interactive Games</div>
+          <div class="feature-desc">Learn through engaging educational games</div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">🏆</div>
+          <div class="feature-title">Gamified Quizzes</div>
+          <div class="feature-desc">Compete and earn XP points</div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">🌍</div>
+          <div class="feature-title">Odia Language</div>
+          <div class="feature-desc">Learn in your mother tongue</div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">👥</div>
+          <div class="feature-title">Multiplayer</div>
+          <div class="feature-desc">Study with friends online</div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">📊</div>
+          <div class="feature-title">Progress Tracking</div>
+          <div class="feature-desc">Monitor your learning journey</div>
+        </div>
+      </div>
+    </section>
+  </div>
+  <!-- Login Page -->
+  <div class="login">
+    <button class="back-btn" onclick="showLanding()">← Back to Home</button>
+    
+    <div class="shell">
+      <!-- role and action switcher -->
+      <nav class="tabs">
+        <button class="tab act" data-pane="stu-login"><span>👩‍🎓</span>Student Login</button>
+        <button class="tab" data-pane="stu-signup"><span>✨</span>Student Signup</button>
+        <button class="tab" data-pane="tea-login"><span>👨‍🏫</span>Teacher Login</button>
+        <button class="tab" data-pane="tea-signup"><span>🎯</span>Teacher Signup</button>
+      </nav>
+      
+      <!-- student login pane -->
+      <section class="pane" id="pane-stu-login">
+        <h2><span>👩‍🎓</span>Student Login</h2>
+        <p class="subtitle">Enter your account to start learning</p>
+        <% if (error && role==='student'){ %>
+          <div class="alert"><%= error %></div>
+        <% } %>
+        <form method="POST" action="/login">
+          <input name="username" placeholder="Username" required>
+          <input type="password" name="password" placeholder="Password" required>
+          <input type="hidden" name="chosenRole" value="student">
+          <button class="login-btn primary">Login & Start Learning →</button>
+        </form>
+        <p class="switch">New student? <a href="#" onclick="switchToPane('stu-signup')">Create Account</a></p>
+      </section>
+      
+      <!-- student signup pane -->
+      <section class="pane" id="pane-stu-signup" hidden>
+        <h2><span>✨</span>Student Signup</h2>
+        <p class="subtitle">Create your account to begin learning</p>
+        <% if (error && role==='student-signup'){ %>
+          <div class="alert"><%= error %></div>
+        <% } %>
+        <form method="POST" action="/register">
+          <div class="form-row">
+            <input name="firstName" placeholder="First Name" required>
+            <input name="lastName" placeholder="Last Name" required>
+          </div>
+          <input name="username" placeholder="Choose Username" required>
+          <input type="email" name="email" placeholder="Email Address" required>
+          <input type="password" name="password" placeholder="Create Password" required>
+          <input type="password" name="confirmPassword" placeholder="Confirm Password" required>
+          <select name="grade" required>
+            <option value="">Select Grade</option>
+            <option value="6">Grade 6</option>
+            <option value="7">Grade 7</option>
+            <option value="8">Grade 8</option>
+            <option value="9">Grade 9</option>
+            <option value="10">Grade 10</option>
+            <option value="11">Grade 11</option>
+            <option value="12">Grade 12</option>
+          </select>
+          <input type="hidden" name="chosenRole" value="student">
+          <button class="login-btn primary">Create Account & Start Learning →</button>
+        </form>
+        <p class="switch">Already have an account? <a href="#" onclick="switchToPane('stu-login')">Login Here</a></p>
+      </section>
+      
+      <!-- teacher login pane -->
+      <section class="pane" id="pane-tea-login" hidden>
+        <h2><span>👨‍🏫</span>Teacher Login</h2>
+        <p class="subtitle">Educator access dashboard</p>
+        <% if (error && role==='teacher'){ %>
+          <div class="alert"><%= error %></div>
+        <% } %>
+        <form method="POST" action="/login">
+          <input name="username" placeholder="Username" required>
+          <input type="password" name="password" placeholder="Password" required>
+          <input type="hidden" name="chosenRole" value="teacher">
+          <button class="login-btn primary">Access Dashboard →</button>
+        </form>
+        <p class="switch">New teacher? <a href="#" onclick="switchToPane('tea-signup')">Join as Educator</a></p>
+      </section>
+      
+      <!-- teacher signup pane -->
+      <section class="pane" id="pane-tea-signup" hidden>
+        <h2><span>🎯</span>Teacher Signup</h2>
+        <p class="subtitle">Join our community of educators</p>
+        <% if (error && role==='teacher-signup'){ %>
+          <div class="alert"><%= error %></div>
+        <% } %>
+        <form method="POST" action="/register">
+          <div class="form-row">
+            <input name="firstName" placeholder="First Name" required>
+            <input name="lastName" placeholder="Last Name" required>
+          </div>
+          <input name="username" placeholder="Choose Username" required>
+          <input type="email" name="email" placeholder="Email Address" required>
+          <input type="password" name="password" placeholder="Create Password" required>
+          <input type="password" name="confirmPassword" placeholder="Confirm Password" required>
+          <input name="school" placeholder="School/Institution Name" required>
+          <select name="subjects" required>
+            <option value="">Primary Subject</option>
+            <option value="mathematics">Mathematics</option>
+            <option value="science">Science</option>
+            <option value="computer-science">Computer Science</option>
+            <option value="odia">Odia Language</option>
+            <option value="all">All Subjects</option>
+          </select>
+          <input type="hidden" name="chosenRole" value="teacher">
+          <button class="login-btn primary">Join as Educator →</button>
+        </form>
+        <p class="switch">Already have an account? <a href="#" onclick="switchToPane('tea-login')">Login Here</a></p>
+      </section>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Landing/Login page transitions
+  function showLogin() {
+    document.getElementById('appContainer').classList.add('show-login');
+  }
+  function showLanding() {
+    document.getElementById('appContainer').classList.remove('show-login');
+  }
+  
+  // Tab switching for login/signup
+  const tabs = [...document.querySelectorAll('.tab')];
+  tabs.forEach(t => {
+    t.addEventListener('click', () => {
+      tabs.forEach(x => x.classList.remove('act'));
+      t.classList.add('act');
+      document.querySelectorAll('.pane').forEach(p => {
+        p.hidden = p.id !== 'pane-' + t.dataset.pane;
+      });
+    });
+  });
+  
+  // Function to switch to specific pane
+  function switchToPane(paneId) {
+    tabs.forEach(x => x.classList.remove('act'));
+    document.querySelector(`[data-pane="${paneId}"]`).classList.add('act');
+    document.querySelectorAll('.pane').forEach(p => {
+      p.hidden = p.id !== 'pane-' + paneId;
+    });
+  }
+  
+  // Language selector functionality
+  function toggleLanguageDropdown() {
+    const dropdown = document.getElementById('languageDropdown');
+    dropdown.classList.toggle('show');
+  }
+  
+  function selectLanguage(code, name) {
+    document.getElementById('currentLang').textContent = name;
+    document.querySelectorAll('.language-option').forEach(opt => opt.classList.remove('active'));
+    event.target.classList.add('active');
+    document.getElementById('languageDropdown').classList.remove('show');
+    
+    // Store selected language
+    localStorage.setItem('selectedLanguage', code);
+    console.log('Language changed to:', code);
+  }
+  
+  // Close language dropdown when clicking outside
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('.language-selector')) {
+      document.getElementById('languageDropdown').classList.remove('show');
+    }
+  });
+  
+  // Load saved language preference
+  document.addEventListener('DOMContentLoaded', function() {
+    const savedLang = localStorage.getItem('selectedLanguage') || 'en';
+    const langNames = {'en': 'English', 'hi': 'हिन्दी', 'or': 'ଓଡ଼ିଆ'};
+    if (langNames[savedLang]) {
+      document.getElementById('currentLang').textContent = langNames[savedLang];
+    }
+  });
+  
+  // Smooth scroll for Learn More button
+  document.querySelector('a[href="#features"]').addEventListener('click', function(e) {
+    e.preventDefault();
+    document.getElementById('features').scrollIntoView({ behavior: 'smooth' });
+  });
+</script>
+</body>
+</html>

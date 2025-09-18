@@ -1,0 +1,1678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard - Socho Seekho</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #4169e1;
+            min-height: 100vh;
+            color: #333;
+        }
+        
+        .topbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .left {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #4facfe;
+        }
+        
+        .brand {
+            background: linear-gradient(135deg, #202039 0%, #202039 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .welcome {
+            color: #333;
+            font-weight: 600;
+        }
+        
+        .xp {
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4a 100%);
+            color: #333;
+            padding: 8px 15px;
+            border-radius: 25px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            transition: transform 0.3s ease;
+        }
+        
+        .xp:hover {
+            transform: scale(1.05);
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 25px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        
+        .btn.ghost {
+            background: transparent;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+        
+        .btn.ghost:hover {
+            background: #667eea;
+            color: white;
+        }
+        
+        .btn.small {
+            padding: 8px 15px;
+            font-size: 0.8rem;
+        }
+        
+        .btn.secondary {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            color: #333;
+        }
+        
+        .btn.primary {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+        
+        .dashboard-header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+        }
+        
+        .dashboard-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        
+        .stat-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 25px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .stat-icon {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #4169e1;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            color: #666;
+            font-weight: 600;
+        }
+        
+        .streak-counter {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+            color: white;
+        }
+        
+        .streak-counter .stat-value {
+            color: white;
+        }
+        
+        .subjects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+        }
+        
+        .subject-card {
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .subject-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);
+        }
+        
+        .subject-icon {
+            font-size: 4rem;
+            margin-bottom: 15px;
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .subject-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        
+        .progress-bar {
+            background: #e9ecef;
+            border-radius: 10px;
+            height: 8px;
+            margin: 15px 0;
+            overflow: hidden;
+        }
+        
+        .progress {
+            background: linear-gradient(90deg,#9acd32 100%);
+            height: 100%;
+            border-radius: 10px;
+            transition: width 1s ease-out;
+        }
+        
+        .meta {
+            color: #f8f3f3;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+        }
+        
+        .card-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .games-section, .challenges-section, .activities-section {
+            margin-top: 50px;
+        }
+        
+        .section-title {
+            color: white;
+            font-size: 2rem;
+            text-align: center;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .game-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .game-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        .game-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+        
+        .challenge-card {
+            background: linear-gradient(135deg, #413f3f 0%, #191970 100%);
+            color: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+        
+        .challenge-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100px;
+            height: 100px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            transform: translate(30px, -30px);
+        }
+        
+        .challenge-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .challenge-reward {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.9rem;
+        }
+        
+        .activity-item {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .activity-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .activity-icon {
+            font-size: 2rem;
+        }
+        
+        .activity-status {
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .status-completed {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .quiz-modal, .game-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+        }
+        
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            background: none;
+            border: none;
+            font-size: 2rem;
+            cursor: pointer;
+            color: #999;
+        }
+        
+        .question {
+            margin-bottom: 25px;
+        }
+        
+        .question h3 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+        
+        .options {
+            display: grid;
+            gap: 10px;
+        }
+        
+        .option {
+            padding: 15px;
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .option:hover {
+            background: #e3f2fd;
+            border-color: #4facfe;
+        }
+        
+        .option.selected {
+            background: #4facfe;
+            color: white;
+            border-color: #4facfe;
+        }
+        
+        .option.correct {
+            background: #28a745;
+            color: white;
+            border-color: #28a745;
+        }
+        
+        .option.incorrect {
+            background: #dc3545;
+            color: white;
+            border-color: #dc3545;
+        }
+        
+        .game-area {
+            text-align: center;
+            padding: 30px;
+        }
+        
+        .math-problem {
+            font-size: 2rem;
+            margin: 20px 0;
+            color: #333;
+        }
+        
+        .answer-input {
+            padding: 15px;
+            font-size: 1.2rem;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            text-align: center;
+            width: 150px;
+            margin: 0 10px;
+        }
+        
+        .memory-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 80px);
+            gap: 10px;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        
+        .memory-card {
+            width: 80px;
+            height: 80px;
+            background: #4facfe;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            color: white;
+        }
+        
+        .memory-card:hover {
+            transform: scale(1.05);
+        }
+        
+        .memory-card.flipped {
+            background: #fff;
+            color: #333;
+            border: 2px solid #4facfe;
+        }
+        
+        .memory-card.matched {
+            background: #28a745;
+            color: white;
+        }
+        
+        .puzzle-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 80px);
+            gap: 5px;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        
+        .puzzle-tile {
+            width: 80px;
+            height: 80px;
+            background: #4facfe;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .puzzle-tile:hover {
+            background: #0088cc;
+        }
+        
+        .puzzle-tile.empty {
+            background: transparent;
+            border: 2px dashed #ccc;
+        }
+        
+        .typing-area {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            font-family: monospace;
+            font-size: 1.2rem;
+        }
+        
+        .typing-input {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.1rem;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-family: monospace;
+        }
+        
+        .game-stats {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+        
+        .stat {
+            text-align: center;
+        }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            background: #28a745;
+            color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+            z-index: 1001;
+        }
+        
+        .notification.show {
+            transform: translateX(0);
+        }
+        
+        .notification.error {
+            background: #dc3545;
+        }
+        
+        @media (max-width: 768px) {
+            .topbar {
+                padding: 15px;
+                flex-wrap: wrap;
+            }
+            
+            .right {
+                gap: 10px;
+            }
+            
+            .dashboard-header h1 {
+                font-size: 2rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .subjects-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .memory-grid {
+                grid-template-columns: repeat(3, 60px);
+            }
+            
+            .memory-card {
+                width: 60px;
+                height: 60px;
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="topbar">
+        <div class="left" style="display: flex; align-items: center;">
+            <div style="width: 40px; height: 40px; background-image: url('/public/css/images/logo.jpeg'); background-size: cover; background-position: center; border-radius: 50%; margin-right: 10px;"></div>
+            <span class="brand">Socho Seekho</span>
+        </div>
+        
+        <div class="right">
+            <div class="welcome">Welcome back, <strong id="student-name">Rama</strong></div>
+            <div class="xp"><span id="xp-value">1250</span> XP</div>
+            <a class="btn ghost" href="#" onclick="logout()">Logout</a>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="dashboard-header">
+            <h1>🎓 Your Learning Journey</h1>
+            <p>Keep learning, keep growing!</p>
+        </div>
+
+        <!-- Stats Grid -->
+        <section class="stats-grid">
+            <div class="stat-card streak-counter">
+                <div class="stat-icon">🔥</div>
+                <div class="stat-value" id="streak-count">7</div>
+                <div class="stat-label">Day Streak</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">⭐</div>
+                <div class="stat-value" id="total-points">1,250</div>
+                <div class="stat-label">Total Points</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">📝</div>
+                <div class="stat-value" id="completed-quizzes">15</div>
+                <div class="stat-label">Quizzes Done</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🎯</div>
+                <div class="stat-value" id="accuracy">87%</div>
+                <div class="stat-label">Accuracy</div>
+            </div>
+        </section>
+
+        <!-- Subjects Section -->
+        <section class="subjects-grid">
+            <div class="card subject-card">
+                <div class="subject-icon">🔢</div>
+                <h3>Mathematics</h3>
+                <div class="progress-bar">
+                    <div class="progress" style="width: 75%"></div>
+                </div>
+                <div class="meta">Progress: 75% • Level 3</div>
+                <div class="card-actions">
+                    <button class="btn small" onclick="startQuiz('math')">📝 Quiz</button>
+                    <button class="btn small secondary" onclick="startGame('math')">🎮 Games</button>
+                </div>
+            </div>
+
+            <div class="card subject-card">
+                <div class="subject-icon">🧪</div>
+                <h3>Science</h3>
+                <div class="progress-bar">
+                    <div class="progress" style="width: 60%"></div>
+                </div>
+                <div class="meta">Progress: 60% • Level 2</div>
+                <div class="card-actions">
+                    <button class="btn small" onclick="startQuiz('science')">📝 Quiz</button>
+                    <button class="btn small secondary" onclick="startGame('science')">🎮 Games</button>
+                </div>
+            </div>
+
+            <div class="card subject-card">
+                <div class="subject-icon">💻</div>
+                <h3>Computer Science</h3>
+                <div class="progress-bar">
+                    <div class="progress" style="width: 45%"></div>
+                </div>
+                <div class="meta">Progress: 45% • Level 2</div>
+                <div class="card-actions">
+                    <button class="btn small" onclick="startQuiz('computer')">📝 Quiz</button>
+                    <button class="btn small secondary" onclick="startGame('computer')">🎮 Games</button>
+                </div>
+            </div>
+
+            <div class="card subject-card">
+                <div class="subject-icon">📚</div>
+                <h3>ଓଡ଼ିଆ ଭାଷା (Odia)</h3>
+                <div class="progress-bar">
+                    <div class="progress" style="width: 55%"></div>
+                </div>
+                <div class="meta">Progress: 55% • Level 2</div>
+                <div class="card-actions">
+                    <button class="btn small" onclick="startQuiz('odia')">📝 Quiz</button>
+                    <button class="btn small secondary" onclick="startGame('odia')">🎮 Games</button>
+                </div>
+            </div>
+
+            <div class="card subject-card">
+                <div class="subject-icon">🌍</div>
+                <h3>Social Studies</h3>
+                <div class="progress-bar">
+                    <div class="progress" style="width: 40%"></div>
+                </div>
+                <div class="meta">Progress: 40% • Level 1</div>
+                <div class="card-actions">
+                    <button class="btn small" onclick="startQuiz('social')">📝 Quiz</button>
+                    <button class="btn small secondary" onclick="startGame('social')">🎮 Games</button>
+                </div>
+            </div>
+
+            <div class="card subject-card">
+                <div class="subject-icon">💪</div>
+                <h3>Health & PE</h3>
+                <div class="progress-bar">
+                    <div class="progress" style="width: 65%"></div>
+                </div>
+                <div class="meta">Progress: 65% • Level 3</div>
+                <div class="card-actions">
+                    <button class="btn small" onclick="startQuiz('health')">📝 Quiz</button>
+                    <button class="btn small secondary" onclick="startGame('health')">🎮 Games</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Games Section -->
+        <section class="games-section">
+            <h2 class="section-title">🎮 Learning Games</h2>
+            <div class="games-grid">
+                <div class="game-card" onclick="startGame('memory')">
+                    <div class="game-icon">🧠</div>
+                    <h3>Memory Match</h3>
+                    <p>Match cards to improve memory</p>
+                </div>
+                <div class="game-card" onclick="startGame('puzzle')">
+                    <div class="game-icon">🧩</div>
+                    <h3>Number Puzzle</h3>
+                    <p>Solve math puzzles</p>
+                </div>
+                <div class="game-card" onclick="startGame('typing')">
+                    <div class="game-icon">⌨️</div>
+                    <h3>Typing Challenge</h3>
+                    <p>Improve typing speed</p>
+                </div>
+                <div class="game-card" onclick="startGame('word')">
+                    <div class="game-icon">🔤</div>
+                    <h3>Word Builder</h3>
+                    <p>Build words from letters</p>
+                </div>
+                <div class="game-card" onclick="startGame('trivia')">
+                    <div class="game-icon">🧠</div>
+                    <h3>Knowledge Trivia</h3>
+                    <p>Test your knowledge</p>
+                </div>
+                <div class="game-card" onclick="startGame('maze')">
+                    <div class="game-icon">🔍</div>
+                    <h3>Logic Maze</h3>
+                    <p>Navigate through challenges</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Daily Challenges -->
+        <section class="challenges-section">
+            <h2 class="section-title">⚡ Daily Challenges</h2>
+            <div class="challenge-card" onclick="acceptChallenge('math')">
+                <div class="challenge-header">
+                    <h3>🔢 Solve 5 Math Problems</h3>
+                    <span class="challenge-reward">+50 XP</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress" style="width: 40%" id="math-challenge-progress"></div>
+                </div>
+                <div class="meta">Progress: 2/5 completed</div>
+            </div>
+
+            <div class="challenge-card" onclick="acceptChallenge('science')">
+                <div class="challenge-header">
+                    <h3>🧪 Complete Science Quiz</h3>
+                    <span class="challenge-reward">+75 XP</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress" style="width: 0%" id="science-challenge-progress"></div>
+                </div>
+                <div class="meta">Progress: 0/1 completed</div>
+            </div>
+
+            <div class="challenge-card" onclick="acceptChallenge('games')">
+                <div class="challenge-header">
+                    <h3>🎮 Play 3 Learning Games</h3>
+                    <span class="challenge-reward">+30 XP</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress" style="width: 66%" id="games-challenge-progress"></div>
+                </div>
+                <div class="meta">Progress: 2/3 completed</div>
+            </div>
+        </section>
+
+        <!-- Daily Activities -->
+        <section class="activities-section">
+            <h2 class="section-title">📅 Today's Activities</h2>
+            <div class="activity-item">
+                <div class="activity-info">
+                    <span class="activity-icon">📖</span>
+                    <div>
+                        <h4>Morning Reading</h4>
+                        <p>Read for 15 minutes</p>
+                    </div>
+                </div>
+                <span class="activity-status status-completed">✅ Completed</span>
+            </div>
+            <div class="activity-item">
+                <div class="activity-info">
+                    <span class="activity-icon">🔢</span>
+                    <div>
+                        <h4>Math Practice</h4>
+                        <p>Solve 10 problems</p>
+                    </div>
+                </div>
+                <span class="activity-status status-pending">⏳ Pending</span>
+            </div>
+            <div class="activity-item">
+                <div class="activity-info">
+                    <span class="activity-icon">🧪</span>
+                    <div>
+                        <h4>Science Experiment</h4>
+                        <p>Watch and learn</p>
+                    </div>
+                </div>
+                <span class="activity-status status-pending">⏳ Pending</span>
+            </div>
+            <div class="activity-item">
+                <div class="activity-info">
+                    <span class="activity-icon">💻</span>
+                    <div>
+                        <h4>Code Challenge</h4>
+                        <p>Complete programming task</p>
+                    </div>
+                </div>
+                <span class="activity-status status-pending">⏳ Pending</span>
+            </div>
+        </section>
+    </main>
+
+    <!-- Quiz Modal -->
+    <div id="quiz-modal" class="quiz-modal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeQuiz()">&times;</button>
+            <div id="quiz-content">
+                <!-- Quiz content will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Game Modal -->
+    <div id="game-modal" class="game-modal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeGame()">&times;</button>
+            <div id="game-content">
+                <!-- Game content will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification -->
+    <div id="notification" class="notification">
+        <span id="notification-text"></span>
+    </div>
+
+    <script>
+        // Sample quiz data for all subjects
+        const quizData = {
+            math: [
+                { question: "What is 25 + 37?", options: ["60", "62", "65", "58"], correct: 1 },
+                { question: "What is 8 × 9?", options: ["72", "81", "64", "54"], correct: 0 },
+                { question: "What is √64?", options: ["6", "7", "8", "9"], correct: 2 },
+                { question: "What is 15% of 200?", options: ["25", "30", "35", "40"], correct: 1 },
+                { question: "If x + 5 = 12, what is x?", options: ["5", "6", "7", "8"], correct: 2 }
+            ],
+            science: [
+                { question: "What is the chemical formula for water?", options: ["H2O", "CO2", "NaCl", "O2"], correct: 0 },
+                { question: "Which planet is closest to the Sun?", options: ["Venus", "Earth", "Mercury", "Mars"], correct: 2 },
+                { question: "What gas do plants absorb from the atmosphere?", options: ["Oxygen", "Nitrogen", "Carbon Dioxide", "Hydrogen"], correct: 2 },
+                { question: "How many bones are in the human body?", options: ["206", "210", "195", "220"], correct: 0 },
+                { question: "What is the speed of light?", options: ["300,000 km/s", "150,000 km/s", "450,000 km/s", "200,000 km/s"], correct: 0 }
+            ],
+            computer: [
+                { question: "What does CPU stand for?", options: ["Central Processing Unit", "Computer Personal Unit", "Central Program Unit", "Computer Processing Unit"], correct: 0 },
+                { question: "Which of these is a programming language?", options: ["HTML", "Python", "CSS", "HTTP"], correct: 1 },
+                { question: "What does RAM stand for?", options: ["Random Access Memory", "Read Access Memory", "Rapid Access Memory", "Real Access Memory"], correct: 0 },
+                { question: "Which company created JavaScript?", options: ["Microsoft", "Google", "Netscape", "Apple"], correct: 2 },
+                { question: "What is the binary representation of 8?", options: ["1000", "1001", "1010", "1100"], correct: 0 }
+            ],
+            odia: [
+                { question: "ଓଡ଼ିଶାର ରାଜଧାନୀ କ'ଣ?", options: ["କଟକ", "ଭୁବନେଶ୍ୱର", "ପୁରୀ", "ବାଲେଶ୍ୱର"], correct: 1 },
+                { question: "କଳିଙ୍ଗ ଯୁଦ୍ଧ କେବେ ହୋଇଥିଲା?", options: ["261 BCE", "265 BCE", "260 BCE", "270 BCE"], correct: 0 },
+                { question: "ଜଗନ୍ନାଥ ମନ୍ଦିର କେଉଁଠାରେ ଅଛି?", options: ["କଟକ", "ଭୁବନେଶ୍ୱର", "ପୁରୀ", "କୋଣାର୍କ"], correct: 2 },
+                { question: "ଓଡ଼ିଆ ଭାଷାର ଜନକ କିଏ?", options: ["ଫକୀର ମୋହନ ସେନାପତି", "ଗଙ୍ଗାଧର ମେହେର", "କବି ସାମ୍ରାଟ ଉପେନ୍ଦ୍ର ଭଞ୍ଜ", "ମାଧବ ପଟ୍ଟନାୟକ"], correct: 0 },
+                { question: "ଓଡ଼ିଶା ଦିବସ କେବେ ପାଳନ କରାଯାଏ?", options: ["ଏପ୍ରିଲ ୧", "ମାର୍ଚ୍ଚ ୩୦", "ଏପ୍ରିଲ ୧୫", "ମାର୍ଚ୍ଚ ୨୦"], correct: 0 }
+            ],
+            social: [
+                { question: "Who was the first President of India?", options: ["Dr. A.P.J. Abdul Kalam", "Dr. Rajendra Prasad", "Jawaharlal Nehru", "Mahatma Gandhi"], correct: 1 },
+                { question: "In which year did India gain independence?", options: ["1945", "1946", "1947", "1948"], correct: 2 },
+                { question: "Which is the longest river in India?", options: ["Yamuna", "Brahmaputra", "Ganga", "Godavari"], correct: 2 },
+                { question: "How many states are there in India?", options: ["28", "29", "30", "27"], correct: 0 },
+                { question: "Who wrote the Indian National Anthem?", options: ["Rabindranath Tagore", "Bankim Chandra Chatterjee", "Sarojini Naidu", "Mahatma Gandhi"], correct: 0 }
+            ],
+            health: [
+                { question: "How many hours of sleep do children need daily?", options: ["6-7 hours", "8-10 hours", "5-6 hours", "12 hours"], correct: 1 },
+                { question: "Which vitamin is produced by our skin when exposed to sunlight?", options: ["Vitamin A", "Vitamin B", "Vitamin C", "Vitamin D"], correct: 3 },
+                { question: "What is the recommended daily water intake for children?", options: ["4-6 glasses", "6-8 glasses", "2-4 glasses", "10 glasses"], correct: 1 },
+                { question: "Which food group provides energy to our body?", options: ["Proteins", "Carbohydrates", "Vitamins", "Minerals"], correct: 1 },
+                { question: "How many times should we brush our teeth daily?", options: ["Once", "Twice", "Three times", "Four times"], correct: 1 }
+            ]
+        };
+
+        // Game data and variables
+        let currentQuiz = null;
+        let currentQuestion = 0;
+        let score = 0;
+        let selectedAnswer = null;
+        let studentData = {
+            name: "student",
+            xp: 1250,
+            streak: 7,
+            totalPoints: 1250,
+            completedQuizzes: 15,
+            accuracy: 87
+        };
+
+        // Memory game variables
+        let memoryCards = [];
+        let flippedCards = [];
+        let matchedPairs = 0;
+        let memoryGameActive = false;
+
+        // Puzzle game variables
+        let puzzleState = [1, 2, 3, 4, 5, 6, 7, 8, 0];
+        let puzzleSolved = [1, 2, 3, 4, 5, 6, 7, 8, 0];
+
+        // Typing game variables
+        let typingText = "";
+        let typingStartTime = 0;
+        let typingWPM = 0;
+
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animate progress bars
+            setTimeout(() => {
+                document.querySelectorAll('.progress').forEach(el => {
+                    const width = el.style.width;
+                    el.style.width = '0';
+                    setTimeout(() => el.style.width = width, 100);
+                });
+            }, 500);
+
+            // Update student stats
+            updateStudentStats();
+        });
+
+        function updateStudentStats() {
+            document.getElementById('student-name').textContent = studentData.name;
+            document.getElementById('xp-value').textContent = studentData.xp;
+            document.getElementById('streak-count').textContent = studentData.streak;
+            document.getElementById('total-points').textContent = studentData.totalPoints.toLocaleString();
+            document.getElementById('completed-quizzes').textContent = studentData.completedQuizzes;
+            document.getElementById('accuracy').textContent = studentData.accuracy + '%';
+        }
+
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+            const text = document.getElementById('notification-text');
+            
+            text.textContent = message;
+            notification.className = `notification show ${type}`;
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        function updateXP(points) {
+            studentData.xp += points;
+            studentData.totalPoints += points;
+            updateStudentStats();
+            showNotification(`+${points} XP earned! 🎉`);
+        }
+
+        function startQuiz(subject) {
+            const quiz = quizData[subject];
+            if (!quiz || quiz.length === 0) {
+                showNotification(`Quiz not available for this subject yet!`, 'error');
+                return;
+            }
+
+            currentQuiz = quiz;
+            currentQuestion = 0;
+            score = 0;
+            selectedAnswer = null;
+
+            document.getElementById('quiz-modal').style.display = 'flex';
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            if (currentQuestion >= currentQuiz.length) {
+                showQuizResult();
+                return;
+            }
+
+            const question = currentQuiz[currentQuestion];
+            const content = document.getElementById('quiz-content');
+
+            content.innerHTML = `
+                <div class="question">
+                    <h2>Question ${currentQuestion + 1} of ${currentQuiz.length}</h2>
+                    <div class="progress-bar" style="margin: 20px 0;">
+                        <div class="progress" style="width: ${((currentQuestion + 1) / currentQuiz.length) * 100}%"></div>
+                    </div>
+                    <h3>${question.question}</h3>
+                    <div class="options">
+                        ${question.options.map((option, index) => 
+                            `<div class="option" onclick="selectOption(${index})">${option}</div>`
+                        ).join('')}
+                    </div>
+                    <button class="btn primary" onclick="nextQuestion()" id="next-btn" style="display: none; margin-top: 20px;">Next Question</button>
+                </div>
+            `;
+        }
+
+        function selectOption(index) {
+            if (selectedAnswer !== null) return;
+
+            selectedAnswer = index;
+            const options = document.querySelectorAll('.option');
+            const correct = currentQuiz[currentQuestion].correct;
+
+            options.forEach((opt, i) => {
+                if (i === correct) {
+                    opt.classList.add('correct');
+                } else if (i === index && i !== correct) {
+                    opt.classList.add('incorrect');
+                }
+                opt.style.pointerEvents = 'none';
+            });
+
+            document.getElementById('next-btn').style.display = 'inline-block';
+
+            if (index === correct) {
+                score++;
+                showNotification('Correct! 🎉');
+            } else {
+                showNotification('Incorrect. Try to remember this! 📚', 'error');
+            }
+        }
+
+        function nextQuestion() {
+            currentQuestion++;
+            selectedAnswer = null;
+            loadQuestion();
+        }
+
+        function showQuizResult() {
+            const percentage = Math.round((score / currentQuiz.length) * 100);
+            const content = document.getElementById('quiz-content');
+            
+            let medal = '🥉';
+            let message = 'Keep practicing!';
+            
+            if (percentage >= 90) {
+                medal = '🥇';
+                message = 'Outstanding performance!';
+            } else if (percentage >= 80) {
+                medal = '🥈';
+                message = 'Excellent work!';
+            } else if (percentage >= 70) {
+                medal = '🥉';
+                message = 'Good job!';
+            }
+
+            content.innerHTML = `
+                <div style="text-align: center;">
+                    <h2>🎊 Quiz Completed!</h2>
+                    <div style="font-size: 4rem; margin: 20px 0;">${medal}</div>
+                    <h3>Your Score: ${score}/${currentQuiz.length}</h3>
+                    <p>Accuracy: ${percentage}%</p>
+                    <p><strong>${message}</strong></p>
+                    <div style="margin: 20px 0;">
+                        <div class="progress-bar">
+                            <div class="progress" style="width: ${percentage}%"></div>
+                        </div>
+                    </div>
+                    <div class="game-stats">
+                        <div class="stat">
+                            <h4>XP Earned</h4>
+                            <p>${score * 10}</p>
+                        </div>
+                        <div class="stat">
+                            <h4>Streak</h4>
+                            <p>${studentData.streak}</p>
+                        </div>
+                    </div>
+                    <button class="btn primary" onclick="closeQuiz()">Continue Learning</button>
+                </div>
+            `;
+
+            // Update stats
+            updateXP(score * 10);
+            studentData.completedQuizzes++;
+            studentData.accuracy = Math.round(((studentData.accuracy * (studentData.completedQuizzes - 1)) + percentage) / studentData.completedQuizzes);
+            updateStudentStats();
+        }
+
+        function closeQuiz() {
+            document.getElementById('quiz-modal').style.display = 'none';
+        }
+
+        function startGame(gameType) {
+            document.getElementById('game-modal').style.display = 'flex';
+            loadGame(gameType);
+        }
+
+        function loadGame(gameType) {
+            const content = document.getElementById('game-content');
+            
+            switch(gameType) {
+                case 'math':
+                    loadMathGame(content);
+                    break;
+                case 'memory':
+                    loadMemoryGame(content);
+                    break;
+                case 'puzzle':
+                    loadPuzzleGame(content);
+                    break;
+                case 'typing':
+                    loadTypingGame(content);
+                    break;
+                case 'word':
+                    loadWordGame(content);
+                    break;
+                case 'trivia':
+                    loadTriviaGame(content);
+                    break;
+                default:
+                    content.innerHTML = `
+                        <div class="game-area">
+                            <h2>${gameType.charAt(0).toUpperCase() + gameType.slice(1)} Game</h2>
+                            <p>This exciting game is coming soon!</p>
+                            <div style="font-size: 4rem; margin: 30px 0;">🎮</div>
+                            <p>Stay tuned for more educational adventures!</p>
+                            <button class="btn primary" onclick="closeGame()">Back to Dashboard</button>
+                        </div>
+                    `;
+            }
+        }
+
+        function loadMathGame(content) {
+            const num1 = Math.floor(Math.random() * 50) + 1;
+            const num2 = Math.floor(Math.random() * 50) + 1;
+            const operations = ['+', '-', '×'];
+            const operation = operations[Math.floor(Math.random() * operations.length)];
+            let answer;
+
+            switch(operation) {
+                case '+':
+                    answer = num1 + num2;
+                    break;
+                case '-':
+                    answer = Math.max(num1, num2) - Math.min(num1, num2);
+                    break;
+                case '×':
+                    answer = num1 * num2;
+                    break;
+            }
+
+            content.innerHTML = `
+                <div class="game-area">
+                    <h2>🔢 Math Speed Challenge</h2>
+                    <div class="game-stats">
+                        <div class="stat">
+                            <h4>Score</h4>
+                            <p id="math-score">0</p>
+                        </div>
+                        <div class="stat">
+                            <h4>Time</h4>
+                            <p id="math-timer">30</p>
+                        </div>
+                    </div>
+                    <div class="math-problem">${operation === '-' ? Math.max(num1, num2) + ' ' + operation + ' ' + Math.min(num1, num2) + ' = ?' : num1 + ' ' + operation + ' ' + num2 + ' = ?'}</div>
+                    <input type="number" class="answer-input" id="math-answer" placeholder="?" onkeypress="if(event.key==='Enter') checkMathAnswer(${answer})">
+                    <br><br>
+                    <button class="btn primary" onclick="checkMathAnswer(${answer})">Submit</button>
+                    <button class="btn secondary" onclick="newMathProblem()" id="next-math">New Problem</button>
+                    <div id="math-result" style="margin-top: 20px;"></div>
+                </div>
+            `;
+            
+            startMathTimer();
+        }
+
+        let mathTimer;
+        let mathScore = 0;
+        let mathTime = 30;
+
+        function startMathTimer() {
+            mathTimer = setInterval(() => {
+                mathTime--;
+                document.getElementById('math-timer').textContent = mathTime;
+                if (mathTime <= 0) {
+                    clearInterval(mathTimer);
+                    endMathGame();
+                }
+            }, 1000);
+        }
+
+        function checkMathAnswer(correctAnswer) {
+            const userAnswer = parseInt(document.getElementById('math-answer').value);
+            const resultDiv = document.getElementById('math-result');
+
+            if (userAnswer === correctAnswer) {
+                mathScore += 10;
+                document.getElementById('math-score').textContent = mathScore;
+                resultDiv.innerHTML = '<div style="color: green; font-size: 1.2rem;">✅ Correct! +10 points</div>';
+                showNotification('Correct! Keep going! 🎉');
+                setTimeout(newMathProblem, 1000);
+            } else {
+                resultDiv.innerHTML = `<div style="color: red; font-size: 1.2rem;">❌ Incorrect. Answer: ${correctAnswer}</div>`;
+                showNotification('Try again! 🤔', 'error');
+            }
+        }
+
+        function newMathProblem() {
+            const num1 = Math.floor(Math.random() * 50) + 1;
+            const num2 = Math.floor(Math.random() * 50) + 1;
+            const operations = ['+', '-'];
+            const operation = operations[Math.floor(Math.random() * operations.length)];
+            let answer;
+
+            switch(operation) {
+                case '+':
+                    answer = num1 + num2;
+                    break;
+                case '-':
+                    answer = Math.max(num1, num2) - Math.min(num1, num2);
+                    break;
+                case '×':
+                    answer = (num1 <= 10 ? Math.floor(Math.random() * 10) + 1 : num1) * (num2 <= 10 ? Math.floor(Math.random() * 10) + 1 : num2);
+                    break;
+            }
+
+            document.querySelector('.math-problem').innerHTML = `${operation === '-' ? Math.max(num1, num2) + ' ' + operation + ' ' + Math.min(num1, num2) + ' = ?' : num1 + ' ' + operation + ' ' + num2 + ' = ?'}`;
+            document.getElementById('math-answer').value = '';
+            document.getElementById('math-result').innerHTML = '';
+            document.querySelector('.btn.primary').onclick = () => checkMathAnswer(answer);
+        }
+
+        function endMathGame() {
+            const resultDiv = document.getElementById('math-result');
+            const xpEarned = mathScore;
+            
+            resultDiv.innerHTML = `
+                <div style="text-align: center; padding: 20px; background: #f8f9fa; border-radius: 10px;">
+                    <h3>🎊 Game Over!</h3>
+                    <p>Final Score: ${mathScore} points</p>
+                    <p>XP Earned: ${xpEarned}</p>
+                    <button class="btn primary" onclick="closeGame()">Continue Learning</button>
+                </div>
+            `;
+            
+            updateXP(xpEarned);
+            mathScore = 0;
+            mathTime = 30;
+        }
+
+        function loadMemoryGame(content) {
+            const symbols = ['🍎', '🍌', '🍇', '🍓', '🥝', '🍊', '🍋', '🥭'];
+            memoryCards = [...symbols, ...symbols].sort(() => Math.random() - 0.5);
+            flippedCards = [];
+            matchedPairs = 0;
+            memoryGameActive = true;
+
+            content.innerHTML = `
+                <div class="game-area">
+                    <h2>🧠 Memory Match Game</h2>
+                    <div class="game-stats">
+                        <div class="stat">
+                            <h4>Matches</h4>
+                            <p id="memory-matches">0/${symbols.length}</p>
+                        </div>
+                        <div class="stat">
+                            <h4>Moves</h4>
+                            <p id="memory-moves">0</p>
+                        </div>
+                    </div>
+                    <div class="memory-grid">
+                        ${memoryCards.map((symbol, index) => 
+                            `<div class="memory-card" data-index="${index}" onclick="flipCard(${index})">?</div>`
+                        ).join('')}
+                    </div>
+                    <div id="memory-result" style="margin-top: 20px;"></div>
+                </div>
+            `;
+
+            let memoryMoves = 0;
+        }
+
+        function flipCard(index) {
+            if (!memoryGameActive || flippedCards.length >= 2) return;
+
+            const card = document.querySelector(`[data-index="${index}"]`);
+            if (card.classList.contains('flipped') || card.classList.contains('matched')) return;
+
+            card.textContent = memoryCards[index];
+            card.classList.add('flipped');
+            flippedCards.push(index);
+
+            if (flippedCards.length === 2) {
+                let memoryMoves = parseInt(document.getElementById('memory-moves').textContent) + 1;
+                document.getElementById('memory-moves').textContent = memoryMoves;
+                setTimeout(checkMemoryMatch, 1000);
+            }
+        }
+
+        function checkMemoryMatch() {
+            const [first, second] = flippedCards;
+            const firstCard = document.querySelector(`[data-index="${first}"]`);
+            const secondCard = document.querySelector(`[data-index="${second}"]`);
+
+            if (memoryCards[first] === memoryCards[second]) {
+                firstCard.classList.add('matched');
+                secondCard.classList.add('matched');
+                matchedPairs++;
+                document.getElementById('memory-matches').textContent = `${matchedPairs}/8`;
+                showNotification('Great match! 🎉');
+
+                if (matchedPairs === 8) {
+                    endMemoryGame();
+                }
+            } else {
+                firstCard.textContent = '?';
+                secondCard.textContent = '?';
+                firstCard.classList.remove('flipped');
+                secondCard.classList.remove('flipped');
+            }
+
+            flippedCards = [];
+        }
+
+        function endMemoryGame() {
+            memoryGameActive = false;
+            const memoryMoves = parseInt(document.getElementById('memory-moves').textContent);
+            const xpEarned = Math.max(50 - (memoryMoves * 2), 10);
+
+            document.getElementById('memory-result').innerHTML = `
+                <div style="text-align: center; padding: 20px; background: #f8f9fa; border-radius: 10px;">
+                    <h3>🎊 Congratulations!</h3>
+                    <p>You completed the game in ${memoryMoves} moves!</p>
+                    <p>XP Earned: ${xpEarned}</p>
+                    <button class="btn primary" onclick="closeGame()">Continue Learning</button>
+                </div>
+            `;
+
+            updateXP(xpEarned);
+        }
+
+        function loadPuzzleGame(content) {
+            puzzleState = [1, 2, 3, 4, 5, 6, 7, 8, 0];
+            shufflePuzzle();
+
+            content.innerHTML = `
+                <div class="game-area">
+                    <h2>🧩 Number Puzzle</h2>
+                    <p>Arrange numbers 1-8 in order. Click tiles to move them!</p>
+                    <div class="puzzle-grid">
+                        ${puzzleState.map((num, index) => 
+                            `<div class="puzzle-tile ${num === 0 ? 'empty' : ''}" onclick="movePuzzleTile(${index})">${num === 0 ? '' : num}</div>`
+                        ).join('')}
+                    </div>
+                    <button class="btn secondary" onclick="shufflePuzzle(); updatePuzzleDisplay();">Shuffle</button>
+                    <div id="puzzle-result" style="margin-top: 20px;"></div>
+                </div>
+            `;
+        }
+
+        function shufflePuzzle() {
+            for (let i = 0; i < 100; i++) {
+                const emptyIndex = puzzleState.indexOf(0);
+                const possibleMoves = [];
+
+                if (emptyIndex % 3 !== 0) possibleMoves.push(emptyIndex - 1);
+                if (emptyIndex % 3 !== 2) possibleMoves.push(emptyIndex + 1);
+                if (emptyIndex >= 3) possibleMoves.push(emptyIndex - 3);
+                if (emptyIndex < 6) possibleMoves.push(emptyIndex + 3);
+
+                const randomMove = possibleMoves[Math.floor(Math.random() * possibleMoves.length)];
+                [puzzleState[emptyIndex], puzzleState[randomMove]] = [puzzleState[randomMove], puzzleState[emptyIndex]];
+            }
+        }
+
+        function movePuzzleTile(clickedIndex) {
+            const emptyIndex = puzzleState.indexOf(0);
+
+            if (
+                (Math.abs(clickedIndex - emptyIndex) === 1 && Math.floor(clickedIndex / 3) === Math.floor(emptyIndex / 3)) ||
+                Math.abs(clickedIndex - emptyIndex) === 3
+            ) {
+                [puzzleState[emptyIndex], puzzleState[clickedIndex]] = [puzzleState[clickedIndex], puzzleState[emptyIndex]];
+                updatePuzzleDisplay();
+
+                if (JSON.stringify(puzzleState) === JSON.stringify([1, 2, 3, 4, 5, 6, 7, 8, 0])) {
+                    document.getElementById('puzzle-result').innerHTML = `
+                        <div style="text-align: center; padding: 20px; background: #f8f9fa; border-radius: 10px;">
+                            <h3>🎊 Puzzle Solved!</h3>
+                            <p>Excellent problem-solving skills!</p>
+                            <p>XP Earned: 50</p>
+                            <button class="btn primary" onclick="closeGame()">Continue Learning</button>
+                        </div>
+                    `;
+                    updateXP(50);
+                }
+            }
+        }
+
+        function updatePuzzleDisplay() {
+            const tiles = document.querySelectorAll('.puzzle-tile');
+            tiles.forEach((tile, index) => {
+                const num = puzzleState[index];
+                tile.textContent = num === 0 ? '' : num;
+                tile.className = `puzzle-tile ${num === 0 ? 'empty' : ''}`;
+            });
+        }
+
+        function loadTypingGame(content) {
+            const texts = [
+                "The quick brown fox jumps over the lazy dog.",
+                "Learning is a treasure that will follow its owner everywhere.",
+                "Education is the most powerful weapon which you can use to change the world.",
+                "The beautiful thing about learning is that no one can take it away from you."
+            ];
+            
+            typingText = texts[Math.floor(Math.random() * texts.length)];
+            typingStartTime = 0;
+
+            content.innerHTML = `
+                <div class="game-area">
+                    <h2>⌨️ Typing Challenge</h2>
+                    <div class="game-stats">
+                        <div class="stat">
+                            <h4>WPM</h4>
+                            <p id="typing-wpm">0</p>
+                        </div>
+                        <div class="stat">
+                            <h4>Accuracy</h4>
+                            <p id="typing-accuracy">100%</p>
+                        </div>
+                    </div>
+                    <div class="typing-area">
+                        <p id="typing-text">${typingText}</p>
+                    </div>
+                    <input type="text" class="typing-input" id="typing-input" placeholder="Start typing here..." oninput="checkTyping()" onkeydown="startTypingTimer()">
+                    <div id="typing-result" style="margin-top: 20px;"></div>
+                </div>
+            `;
+        }
+
+        function startTypingTimer() {
+            if (typingStartTime === 0) {
+                typingStartTime = Date.now();
+            }
+        }
+
+        function checkTyping() {
+            const input = document.getElementById('typing-input').value;
+            const textElement = document.getElementById('typing-text');
+            let correctChars = 0;
+            let html = '';
+
+            for (let i = 0; i < typingText.length; i++) {
+                if (i < input.length) {
+                    if (input[i] === typingText[i]) {
+                        html += `<span style="background: #d4edda">${typingText[i]}</span>`;
+                        correctChars++;
+                    } else {
+                        html += `<span style="background: #f8d7da">${typingText[i]}</span>`;
+                    }
+                } else if (i === input.length) {
+                    html += `<span style="background: #fff3cd">${typingText[i]}</span>`;
+                } else {
+                    html += typingText[i];
+                }
+            }
+
+            textElement.innerHTML = html;
+
+            const accuracy = Math.round((correctChars / input.length) * 100) || 100;
+            document.getElementById('typing-accuracy').textContent = accuracy + '%';
+
+            if (typingStartTime > 0) {
+                const timeElapsed = (Date.now() - typingStartTime) / 1000 / 60;
+                const wpm = Math.round((input.length / 5) / timeElapsed) || 0;
+                document.getElementById('typing-wpm').textContent = wpm;
+            }
+
+            if (input === typingText) {
+                const finalWPM = parseInt(document.getElementById('typing-wpm').textContent);
+                const xpEarned = Math.max(finalWPM, 20);
+                
+                document.getElementById('typing-result').innerHTML = `
+                    <div style="text-align: center; padding: 20px; background: #f8f9fa; border-radius: 10px;">
+                        <h3>🎊 Well Done!</h3>
+                        <p>Final WPM: ${finalWPM}</p>
+                        <p>Final Accuracy: ${accuracy}%</p>
+                        <p>XP Earned: ${xpEarned}</p>
+                        <button class="btn primary" onclick="closeGame()">Continue Learning</button>
+                    </div>
+                `;
+                
+                updateXP(xpEarned);
+            }
+        }
+
+        function loadWordGame(content) {
+            const words = ['EDUCATION', 'LEARNING', 'KNOWLEDGE', 'SCIENCE', 'MATHEMATICS'];
+            const currentWord = words[Math.floor(Math.random() * words.length)];
+            const scrambled = currentWord.split('').sort(() => Math.random() - 0.5).join('');
+
+            content.innerHTML = `
+                <div class="game-area">
+                    <h2>🔤 Word Builder</h2>
+                    <p>Unscramble these letters to form a word:</p>
+                    <div style="font-size: 2rem; margin: 20px 0; color: #4facfe; font-weight: bold;">${scrambled}</div>
+                    <input type="text" class="answer-input" id="word-answer" placeholder="Enter word here..." style="width: 300px;">
+                    <br><br>
+                    <button class="btn primary" onclick="checkWord('${currentWord}')">Submit</button>
+                    <div id="word-result" style="margin-top: 20px;"></div>
+                    <div style="margin-top: 20px; color: #666;">
+                        <small>Hint: This word is related to learning!</small>
+                    </div>
+                </div>
+            `;
+        }
+
+        function checkWord(correctWord) {
+            const userAnswer = document.getElementById('word-answer').value.toUpperCase();
+            const resultDiv = document.getElementById('word-result');
+
+            if (userAnswer === correctWord) {
+                resultDiv.innerHTML = `
+                    <div style="text-align: center; padding: 20px; background: #f8f9fa; border-radius: 10px;">
+                        <h3>🎊 Excellent!</h3>
+                        <p>You got it right: <strong>${correctWord}</strong></p>
+                        <p>XP Earned: 30</p>
+                        <button class="btn primary" onclick="closeGame()">Continue Learning</button>
+                    </div>
+                `;
+                updateXP(30);
+                showNotification('Great word-building skills! 🎉');
+            } else {
+                resultDiv.innerHTML = `<div style="color: red; font-size: 1.1rem;">❌ Try again! Hint: ${correctWord.charAt(0)}___</div>`;
+                showNotification('Keep trying! 🤔', 'error');
+            }
+        }
+
+        function loadTriviaGame(content) {
+            const triviaQuestions = [
+                { question: "What is the largest planet in our solar system?", answer: "Jupiter" },
+                { question: "Who painted the Mona Lisa?", answer: "Leonardo da Vinci" },
+                { question: "What is the capital of Australia?", answer: "Canberra" },
+                { question: "How many continents are there?", answer: "7" },
+                { question: "What is the smallest prime number?", answer: "2" }
+            ];
+
+            const currentQ = triviaQuestions[Math.floor(Math.random() * triviaQuestions.length)];
+
+            content.innerHTML = `
+                <div class="game-area">
+                    <h2>🧠 Knowledge Trivia</h2>
+                    <div style="font-size: 1.3rem; margin: 20px 0; padding: 20px; background: #f8f9fa; border-radius: 10px;">
+                        ${currentQ.question}
+                    </div>
+                    <input type="text" class="answer-input" id="trivia-answer" placeholder="Your answer..." style="width: 300px;">
+                    <br><br>
+                    <button class="btn primary" onclick="checkTrivia('${currentQ.answer}')">Submit</button>
+                    <div id="trivia-result" style="margin-top: 20px;"></div>
+                </div>
+            `;
+        }
+
+        function checkTrivia(correctAnswer) {
+            const userAnswer = document.getElementById('trivia-answer').value.trim();
+            const resultDiv = document.getElementById('trivia-result');
+
+            if (userAnswer.toLowerCase() === correctAnswer.toLowerCase()) {
+                resultDiv.innerHTML = `
+                    <div style="text-align: center; padding: 20px; background: #f8f9fa; border-radius: 10px;">
+                        <h3>🎊 Correct!</h3>
+                        <p>Answer: <strong>${correctAnswer}</strong></p>
+                        <p>XP Earned: 25</p>
+                        <button class="btn primary" onclick="closeGame()">Continue Learning</button>
+                    </div>
+                `;
+                updateXP(25);
+                showNotification('Great knowledge! 🧠');
+            } else {
+                resultDiv.innerHTML = `<div style="color: red; font-size: 1.1rem;">❌ Incorrect. The answer is: ${correctAnswer}</div>`;
+                showNotification('Learn something new! 📚', 'error');
+            }
+        }
+
+        function closeGame() {
+            document.getElementById('game-modal').style.display = 'none';
+        }
+
+        function acceptChallenge(type) {
+            showNotification(`${type.charAt(0).toUpperCase() + type.slice(1)} challenge accepted! 💪`);
+            // Add challenge logic here
+        }
+
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                showNotification('Logged out successfully! 👋');
+                // Add logout logic here
+            }
+        }
+
+        // Add some fun interactions
+        document.addEventListener('keydown', function(e) {
+            // Easter egg: Konami code
+            const konamiCode = [38, 38, 40, 40, 37, 39, 37, 39, 66, 65];
+            if (e.keyCode === konamiCode[0]) {
+                // Start Konami code detection
+                showNotification('🎮 Keep exploring!');
+            }
+        });
+
+        // Auto-save progress every 30 seconds
+        setInterval(() => {
+            if (studentData.xp > 0) {
+                console.log('Progress auto-saved!');
+            }
+        }, 30000);
+    </script>
+</body>
+</html>
